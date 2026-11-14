@@ -4,7 +4,7 @@
 To perform Multiple Linear Regression on a dataset imported from a CSV file to analyze how multiple features together predict a dependent variable.
 
 ## Dataset
-The dataset used for this experiment is `fish.csv` (referenced as `Fish_length.csv` in the script), which contains real-world physical measurements of various fish species:
+The dataset used for this experiment is `fish.csv` which contains real-world physical measurements of various fish species:
 * **Independent Variables ($X$):**
   * `L`: Mean length derived from `Length1`, `Length2`, and `Length3`
   * `Height`: Vertical height of the fish
