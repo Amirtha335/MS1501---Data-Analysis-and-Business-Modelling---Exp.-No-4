@@ -38,7 +38,95 @@ The dataset used for this experiment is `fish.csv` which contains real-world phy
 | **Visualization (Matplotlib)** | `plt.plot()` | Plot actual and predicted weight values for comparison |
 | | `plt.title()`, `plt.xlabel()`, `plt.ylabel()`, `plt.legend()`, `plt.show()` | Configure titles, axis labels, legend, and display the plotted figure |
 
-## Program & Output
+## Program & Output  
+# 1. Import required libraries  
+import numpy as np  
+import pandas as pd  
+import matplotlib.pyplot as plt  
+from sklearn.linear_model import LinearRegression  
+from sklearn.metrics import r2_score  
+
+# 2. Load the fish dataset  
+# Place Fish_length.csv in the same folder as this notebook.  
+df = pd.read_csv("Fish_length.csv")  
+
+# 3. Display the dataset and inspect columns  
+print("Dataset shape:", df.shape)  
+print("Columns:", df.columns.tolist())  
+display(df.head())  
+
+# 4. Calculate L as the mean of Length1, Length2, and Length3  
+required = ["Weight", "Length1", "Length2", "Length3", "Height", "Width"]  
+missing = [column for column in required if column not in df.columns]  
+if missing:  
+    raise ValueError(f"Required columns missing from dataset: {missing}")  
+
+df["L"] = df[["Length1", "Length2", "Length3"]].mean(axis=1)  
+display(df[["Species", "Weight", "L", "Height", "Width"]].head())  
+
+# 5. Define independent variables (X) and dependent variable (Y)  
+X = df[["L", "Height", "Width"]]  
+Y = df["Weight"]  
+
+print("Independent variables:")  
+display(X.head())  
+print("Dependent variable:")  
+display(Y.head())  
+
+# 6. Train the Multiple Linear Regression model
+model = LinearRegression()
+model.fit(X, Y)
+
+# 7. Display coefficients, intercept, and regression equation  
+print(f"Intercept: {model.intercept_:.4f}")  
+for feature, coefficient in zip(X.columns, model.coef_):  
+    print(f"Coefficient for {feature}: {coefficient:.4f}")  
+
+print(  
+    f"\\nRegression equation: Weight = {model.intercept_:.4f} "  
+    f"+ ({model.coef_[0]:.4f} * L) "  
+    f"+ ({model.coef_[1]:.4f} * Height) "  
+    f"+ ({model.coef_[2]:.4f} * Width)"  
+)  
+# 8. Predict Weight values and evaluate using R² score  
+predicted_weight = model.predict(X)  
+score = r2_score(Y, predicted_weight)  
+
+results = pd.DataFrame({  
+    "Actual Weight (g)": Y,  
+    "Predicted Weight (g)": predicted_weight  
+})  
+display(results.round(2))  
+print(f"R² Score: {score:.4f}")  
+
+# 9. Plot actual vs predicted weight values  
+plt.figure(figsize=(10, 6))  
+plt.plot(range(len(Y)), Y, marker="o", linestyle="-", label="Actual Weight")  
+plt.plot(range(len(predicted_weight)), predicted_weight, marker="x",  
+         linestyle="--", label="Predicted Weight")  
+plt.title("Multiple Regression: Actual vs Predicted Fish Weight")  
+plt.xlabel("Fish Record Index")  
+plt.ylabel("Weight (grams)")  
+plt.legend()  
+plt.grid(True)  
+plt.tight_layout()  
+plt.show()  
+
+# Optional: Predict weight for a new fish (edit measurements as needed)  
+new_fish = pd.DataFrame({  
+    "L": [30.0],  
+    "Height": [10.0],  
+    "Width": [5.0]  
+})  
+new_prediction = model.predict(new_fish)  
+print(f"Predicted fish weight: {new_prediction[0]:.2f} grams") 
+
+
+
+
+
+
+
 
 
 ## Result
